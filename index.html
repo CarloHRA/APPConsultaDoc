@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta DNI - Hospital Regional de Ayacucho</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #5E2B95;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .result p {
+            margin: 5px 0;
+        }
+        #btnLimpiar {
+            background-color: #5E2B95;
+        }
+        #btnLimpiar:hover {
+            background-color: #c0392b;
+        }
+        img {
+            width: 200px;
+            margin-bottom: 40px;
+        }
+        .result-fields {
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+            margin-top: 10px;
+        }
+        .result-fields div {
+            display: flex;
+            justify-content: stretch;
+            width: 100%;
+            margin: 5px 0;
+        }
+        .result-fields strong {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="img/Img01.jpg" alt="Hospital Regional de Ayacucho" >
+        <h1>Consulta de DNI</h1>
+        <input type="text" id="txtDocumento" placeholder="Ingrese DNI" />
+        <button id="btnBuscar">Buscar</button>
+        <button id="btnLimpiar">Limpiar</button>
+
+        <div class="result">
+            <h2>Resultados:</h2>
+            <div class="result-fields">
+                <div>
+                    <strong>Nombres:</strong>
+                    <span id="txtNom"></span>
+                </div>
+                <div>
+                    <strong>Apellido Paterno:</strong>
+                    <span id="txtApePat"></span>
+                </div>
+                <div>
+                    <strong>Apellido Materno:</strong>
+                    <span id="txtApeMat"></span>
+                </div>
+                <div>
+                    <strong>Sexo:</strong>
+                    <span id="txtSexo"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('btnBuscar').addEventListener('click', async () => {
+            const dni = document.getElementById('txtDocumento').value;
+            if (!dni) {
+                alert('Por favor ingrese un DNI válido.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/consulta/${dni}`);
+                const data = await response.json();
+
+                document.getElementById('txtNom').innerText = data.nom || 'No encontrado';
+                document.getElementById('txtApePat').innerText = data.apePat || 'No encontrado';
+                document.getElementById('txtApeMat').innerText = data.apeMat || 'No encontrado';
+                document.getElementById('txtSexo').innerText = data.sexo || 'No especificado';
+            } catch (error) {
+                alert('Error al obtener los datos. Intente nuevamente.');
+            }
+        });
+
+        document.getElementById('btnLimpiar').addEventListener('click', () => {
+            document.getElementById('txtDocumento').value = '';
+            document.getElementById('txtNom').innerText = '';
+            document.getElementById('txtApePat').innerText = '';
+            document.getElementById('txtApeMat').innerText = '';
+            document.getElementById('txtSexo').innerText = '';
+        });
+    </script>
+
+</body>
+</html>
