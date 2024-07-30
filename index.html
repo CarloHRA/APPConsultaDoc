@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        h4 {
+            color: #2c3e50;
+            font-style: italic;
+            font-size: 10px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px 0;
+            width: 100%;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #5E2B95;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: left;
+        }
+        .result table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .result th, .result td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .result th {
+            background-color: #f2f2f2;
+        }
+        #btnLimpiar {
+            background-color: #5E2B95;
+        }
+        #btnLimpiar:hover {
+            background-color: #c0392b;
+        }
+        img {
+            width: 200px;
+            margin-bottom: 40px;
+        }
+        textarea {
+            width: 600px;
+            height: 200px;
+            margin-top: 20px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Consulta de Documento</h1>
+        <input type="text" id="txtDocumento" placeholder="Ingrese Documento" />
+        <button id="btnBuscar">Buscar</button>
+        <button id="btnLimpiar">Limpiar</button>
+
+        <div class="result">
+            <h2>Resultados:</h2>
+            <table>
+                <tr>
+                    <th>Nombres</th>
+                    <td id="txtNom"></td>
+                </tr>
+                <tr>
+                    <th>Apellido Paterno</th>
+                    <td id="txtApePat"></td>
+                </tr>
+                <tr>
+                    <th>Apellido Materno</th>
+                    <td id="txtApeMat"></td>
+                </tr>
+                <tr>
+                    <th>Sexo</th>
+                    <td id="txtSexo"></td>
+                </tr>
+                <tr>
+                    <th>Fecha de Nacimiento</th>
+                    <td id="txtFecNac"></td>
+                </tr>
+                <tr>
+                    <th>Edad</th>
+                    <td id="txtEdad"></td>
+                </tr>
+                <tr>
+                    <th>Departamento</th>
+                    <td id="txtDepto"></td>
+                </tr>
+                <tr>
+                    <th>Provincia</th>
+                    <td id="txtProv"></td>
+                </tr>
+                <tr>
+                    <th>Distrito</th>
+                    <td id="txtDist"></td>
+                </tr>
+                <tr>
+                    <th>Dirección</th>
+                    <td id="txtDirec"></td>
+                </tr>
+            </table>
+            <h4>* Esta APP solo funciona con la red de la Institución</h4>
+        </div>
+    </div>
+
+    <!--
+    <h2>Respuesta XML:</h2>
+    <textarea id="xmlResponse" readonly></textarea> -->
+
+    <script>
+        document.getElementById('btnBuscar').addEventListener('click', async () => {
+            const dni = document.getElementById('txtDocumento').value;
+            if (!dni) {
+                alert('Por favor ingrese un Documento válido.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://localhost:3000/api/consulta/${dni}`);
+                const data = await response.json();
+
+                document.getElementById('txtNom').innerText = data.nom || 'No encontrado';
+                document.getElementById('txtApePat').innerText = data.apePat || 'No encontrado';
+                document.getElementById('txtApeMat').innerText = data.apeMat || 'No encontrado';
+                document.getElementById('txtSexo').innerText = data.sexo || 'No especificado';
+                document.getElementById('txtFecNac').innerText = data.fecNac || 'No especificado';
+                document.getElementById('txtEdad').innerText = data.edad || 'No especificado';
+                document.getElementById('txtDepto').innerText = data.depto || 'No especificado';
+                document.getElementById('txtProv').innerText = data.prov || 'No especificado';
+                document.getElementById('txtDist').innerText = data.dist || 'No especificado';
+                document.getElementById('txtDirec').innerText = data.direc || 'No especificado';
+
+                // Mostrar la respuesta XML en el textarea
+                //document.getElementById('xmlResponse').value = JSON.stringify(data, null, 2);
+
+            } catch (error) {
+                alert('Error al obtener los datos. Intente nuevamente.');
+            }
+        });
+
+        document.getElementById('btnLimpiar').addEventListener('click', () => {
+            document.getElementById('txtDocumento').value = '';
+            document.getElementById('txtNom').innerText = '';
+            document.getElementById('txtApePat').innerText = '';
+            document.getElementById('txtApeMat').innerText = '';
+            document.getElementById('txtSexo').innerText = '';
+            document.getElementById('txtFecNac').innerText = '';
+            document.getElementById('txtEdad').innerText = '';
+            document.getElementById('txtDepto').innerText = '';
+            document.getElementById('txtProv').innerText = '';
+            document.getElementById('txtDist').innerText = '';
+            document.getElementById('txtDirec').innerText = '';
+            //document.getElementById('xmlResponse').value = '';
+        });
+    </script>
+
+</body>
+</html>
